@@ -1,7 +1,5 @@
 package model;
 
-import android.util.Log;
-
 import java.util.List;
 
 import utils.XMLParser;
@@ -29,5 +27,15 @@ public class DataStore {
 
     public List<Currency> getCurrencies(){
         return mCurrencies;
+    }
+
+    public String[] getCurrencyNames(){
+        String[] currencyNames = new String[mCurrencies.size()];
+
+        for(int i = 0; i < mCurrencies.size(); i++){
+            currencyNames[i] = mCurrencies.get(i).getCurrencyName();
+        }
+
+        return currencyNames;
     }
 }

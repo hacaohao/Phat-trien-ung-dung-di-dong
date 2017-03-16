@@ -2,4 +2,11 @@
     <string name="app_name">ChuyenDoiNgoaiTe</string>
     <string name="watch">Xem tỷ giá</string>
     <string name="transfer">Chuyển đổi</string>
+    <string name="currency_code">Mã NT</string>
+    <string name="currency_name">Tên ngoại tệ</string>
+    <string name="buy">Giá mua</string>
+    <string name="sell">Giá bán</string>
+    <string name="from">Từ</string>
+    <string name="to">Sang</string>
+    <string name="quantity">Số lượng</string>
 </resources>

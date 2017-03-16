@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ShowActivity">
+        </activity>
+        <activity android:name=".TransferActivity">
+        </activity>
     </application>
 
 </manifest>

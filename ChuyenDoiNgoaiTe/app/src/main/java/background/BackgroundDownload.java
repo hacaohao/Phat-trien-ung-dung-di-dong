@@ -1,7 +1,6 @@
 package background;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import model.DataStore;
 import utils.XMLDownloader;

@@ -1,7 +1,6 @@
 package utils;
 
 import android.os.Environment;
-import android.util.Log;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,6 +59,9 @@ public class XMLParser {
 
     private List<Currency> parse(Document document){
         List<Currency>  currencies = new ArrayList<>();
+
+        Currency VNDcurrnecy = new Currency("VND", "Vietnam dong", 1.0, 1.0, 1.0);
+        currencies.add(VNDcurrnecy);
 
         Element root = document.getDocumentElement();
         NodeList list = root.getChildNodes();
