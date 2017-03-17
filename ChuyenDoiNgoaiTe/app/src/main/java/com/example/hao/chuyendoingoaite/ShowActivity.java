@@ -16,8 +16,9 @@ import model.Currency;
 import model.DataStore;
 
 public class ShowActivity extends AppCompatActivity {
+    private static final int VND_INDEX = 0;
     private GridView mGridView;
-    private DataStore mDataStore;
+    private DataStore mDataStore = DataStore.getInstance();
     private List<Currency> mCurrencies;
 
     @Override
@@ -25,11 +26,16 @@ public class ShowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
 
-        mDataStore = DataStore.getInstance();
         mCurrencies = mDataStore.getCurrencies();
 
         mGridView = (GridView) findViewById(R.id.grid_view_main);
-        mGridView.setAdapter(new CurrencyAdapter(this, mCurrencies));
+        mGridView.setAdapter(new CurrencyAdapter(this, getShownCurrencies()));
+    }
+
+    private List<Currency> getShownCurrencies(){
+        int startIndex = VND_INDEX + 1;
+        int endIndex = mCurrencies.size() - 1;
+        return mCurrencies.subList(startIndex, endIndex);
     }
 
     private class CurrencyAdapter extends BaseAdapter{
@@ -63,26 +69,28 @@ public class ShowActivity extends AppCompatActivity {
 
             if(convertView == null){
                 Currency currency = mCurrencies.get(position);
-                gridView = new View(mContext);
                 gridView = inflater.inflate(R.layout.grid_view_item, null);
-
-                TextView textViewCurrencyCode = (TextView) gridView.findViewById(R.id.grid_item_text_view_currency_code);
-                textViewCurrencyCode.setText(currency.getCurrencyCode());
-
-                TextView textViewCurrencyName = (TextView) gridView.findViewById(R.id.grid_item_text_view_currency_name);
-                textViewCurrencyName.setText(currency.getCurrencyName());
-
-                TextView textViewBuy = (TextView) gridView.findViewById(R.id.grid_item_text_view_buy);
-                String buyPrice = currency.getBuy() == 0 ? "-" : String.valueOf(currency.getBuy());
-                textViewBuy.setText(buyPrice);
-
-                TextView textViewSell = (TextView) gridView.findViewById(R.id.grid_item_text_view_sell);
-                textViewSell.setText(String.valueOf(currency.getSell()));
+                bindDataToView(currency, gridView);
             }else{
                 gridView = convertView;
             }
 
             return gridView;
+        }
+
+        private void bindDataToView(Currency currency, View gridView){
+            TextView textViewCurrencyCode = (TextView) gridView.findViewById(R.id.grid_item_text_view_currency_code);
+            textViewCurrencyCode.setText(currency.getCurrencyCode());
+
+            TextView textViewCurrencyName = (TextView) gridView.findViewById(R.id.grid_item_text_view_currency_name);
+            textViewCurrencyName.setText(currency.getCurrencyName());
+
+            TextView textViewBuy = (TextView) gridView.findViewById(R.id.grid_item_text_view_buy);
+            String buyPrice = currency.getBuy() == 0 ? "-" : String.format("%.2f", currency.getBuy());
+            textViewBuy.setText(buyPrice);
+
+            TextView textViewSell = (TextView) gridView.findViewById(R.id.grid_item_text_view_sell);
+            textViewSell.setText(String.format("%.2f", currency.getSell()));
         }
     }
 }

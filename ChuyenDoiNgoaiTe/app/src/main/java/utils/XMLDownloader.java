@@ -1,7 +1,5 @@
 package utils;
 
-import android.os.Environment;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,16 +15,20 @@ import java.net.URL;
 public class XMLDownloader {
     private static final String SITE = "https://www.vietcombank.com.vn/exchangerates/ExrateXML.aspx";
     private static final String REQUEST_METHOD = "GET";
+    private static final int MAX_SIZE_BUFFER = 1024;
 
     public void downloadFile() {
         try {
-            HttpURLConnection connection = getConnection();
-            FileOutputStream fileOutput = getFileOutputStream();
-            downloadAndSave(connection, fileOutput);
-        } catch (Exception e) {
-            e.printStackTrace();
+            setupAndDownload();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+    }
 
+    private void setupAndDownload() throws Exception {
+        HttpURLConnection connection = getConnection();
+        FileOutputStream fileOutput = getFileOutputStream();
+        downloadAndSave(connection, fileOutput);
     }
 
     private HttpURLConnection getConnection() throws IOException {
@@ -41,32 +43,21 @@ public class XMLDownloader {
     }
 
     private FileOutputStream getFileOutputStream() throws FileNotFoundException {
-        String SDCardRoot = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File file = new File(SDCardRoot + "/" + XMLParser.FILE_NAME);
-
+        File file = new File(XMLParser.FILE_PATH);
         return new FileOutputStream(file);
     }
 
-    private void downloadAndSave(HttpURLConnection connection, FileOutputStream fileOutput){
-        try {
-            InputStream inputStream = connection.getInputStream();
+    private void downloadAndSave(HttpURLConnection connection, FileOutputStream fileOutput) throws Exception {
+        InputStream inputStream = connection.getInputStream();
 
-            int totalSize = connection.getContentLength();
-            int downloadedSize = 0;
+        byte[] buffer = new byte[MAX_SIZE_BUFFER];
+        int bufferLength;
 
-            byte[] buffer = new byte[1024];
-            int bufferLength = 0;
-
-            while ( (bufferLength = inputStream.read(buffer)) >= 0 ) {
-                fileOutput.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
-            }
-
-            fileOutput.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            connection.disconnect();
+        while ( (bufferLength = inputStream.read(buffer)) >= 0 ) {
+            fileOutput.write(buffer, 0, bufferLength);
         }
+
+        fileOutput.close();
+        connection.disconnect();
     }
 }

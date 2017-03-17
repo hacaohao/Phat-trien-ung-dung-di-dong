@@ -1,7 +1,7 @@
 package com.example.hao.chuyendoingoaite;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import model.Currency;
 import model.DataStore;
+import utils.InputHandler;
 
 public class TransferActivity extends AppCompatActivity {
     private Spinner mSpinnerFrom;
@@ -22,7 +23,7 @@ public class TransferActivity extends AppCompatActivity {
     private EditText mEditTextQuantity;
     private TextView mTextViewResult;
 
-    private DataStore mDataStore;
+    private DataStore mDataStore = DataStore.getInstance();
     private List<Currency> mCurrencies;
 
     @Override
@@ -30,7 +31,6 @@ public class TransferActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
 
-        mDataStore = DataStore.getInstance();
         String[] currencyNames = mDataStore.getCurrencyNames();
         mCurrencies = mDataStore.getCurrencies();
 
@@ -86,40 +86,11 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     private void setResult(String input){
-        String result = "";
-        if(input.equals("")){
-            result = "";
-        }else{
-            try{
-                double quantity = Double.parseDouble(input);
+        InputHandler handler = new InputHandler(input);
+        handler.setFromPosition(mSpinnerFrom.getSelectedItemPosition());
+        handler.setToPosition(mSpinnerTo.getSelectedItemPosition());
 
-                if(quantity <= 0){
-                    result = "Không hợp lệ";
-                }else{
-                    int fromPosition = mSpinnerFrom.getSelectedItemPosition();
-                    int toPosition = mSpinnerTo.getSelectedItemPosition();
-
-                    if( fromPosition == toPosition){
-                        result = String.valueOf(quantity);
-                    }else{
-                        Currency fromCurrency = mCurrencies.get(fromPosition);
-                        Currency toCurrency = mCurrencies.get(toPosition);
-
-                        if(toCurrency.getBuy() == 0){
-                            result = "Không hỗ trợ";
-                        }else{
-                            double rate = fromCurrency.getSell() / toCurrency.getBuy();
-                            double value = rate * quantity;
-
-                            result = String.valueOf(value);
-                        }
-                    }
-                }
-            }catch (Exception e){
-                result = "Không hợp lệ";
-            }
-        }
-
+        String result = handler.getResult();
         mTextViewResult.setText(result);
     }
 }
