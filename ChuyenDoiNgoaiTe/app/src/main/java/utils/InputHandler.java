@@ -10,14 +10,16 @@ import model.DataStore;
  */
 
 public class InputHandler {
+    private static final String NOT_SUPPORT = "Không hỗ trợ";
+    private static final String INVALID = "Không hợp lệ";
+    private static final String CURRENCY_FORMAT = "%.2f";
+
     private String mInput;
     private int mFromPosition;
     private int mToPosition;
-    private List<Currency> mCurrencies;
 
     public InputHandler(String input){
         mInput = input;
-        mCurrencies = DataStore.getInstance().getCurrencies();
     }
 
     public void setFromPosition(int fromPosition) {
@@ -39,7 +41,7 @@ public class InputHandler {
     }
 
     private String getResultFromNotEmptyInput() {
-        String result = "Không hợp lệ";
+        String result = INVALID;
 
         try {
             double quantity = Double.parseDouble(mInput);
@@ -65,16 +67,19 @@ public class InputHandler {
     }
 
     private String getResultFromDifferentCurrencies(double quantity){
-        Currency fromCurrency = mCurrencies.get(mFromPosition);
-        Currency toCurrency = mCurrencies.get(mToPosition);
+        DataStore dataStore = DataStore.getInstance();
+        List<Currency> currencies = dataStore.getAllCurrencies();
 
-        String result = "Không hỗ trợ";
+        Currency fromCurrency = currencies.get(mFromPosition);
+        Currency toCurrency = currencies.get(mToPosition);
+
+        String result = NOT_SUPPORT;
 
         if(toCurrency.getBuy() != 0){
             double rate = fromCurrency.getSell() / toCurrency.getBuy();
             double value = rate * quantity;
 
-            result = String.format("%.2f", value);
+            result = String.format(CURRENCY_FORMAT, value);
         }
 
         return result;

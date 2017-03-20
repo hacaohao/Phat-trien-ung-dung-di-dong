@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.security.PrivateKey;
 import java.util.List;
 
 import model.Currency;
@@ -24,7 +25,7 @@ public class TransferActivity extends AppCompatActivity {
     private TextView mTextViewResult;
 
     private DataStore mDataStore = DataStore.getInstance();
-    private List<Currency> mCurrencies;
+    private ArrayAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,37 +33,10 @@ public class TransferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transfer);
 
         String[] currencyNames = mDataStore.getCurrencyNames();
-        mCurrencies = mDataStore.getCurrencies();
+        mAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyNames);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyNames);
-
-        mSpinnerFrom = (Spinner) findViewById(R.id.spinner_from);
-        mSpinnerFrom.setAdapter(adapter);
-        mSpinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setResult(mEditTextQuantity.getText().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        mSpinnerTo = (Spinner) findViewById(R.id.spinner_to);
-        mSpinnerTo.setAdapter(adapter);
-        mSpinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setResult(mEditTextQuantity.getText().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        mSpinnerFrom = setupSpinner(R.id.spinner_from);
+        mSpinnerTo = setupSpinner(R.id.spinner_to);
 
         mTextViewResult = (TextView) findViewById(R.id.text_view_result);
 
@@ -83,6 +57,24 @@ public class TransferActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private Spinner setupSpinner(int spinnerID){
+        Spinner spinner = (Spinner) findViewById(spinnerID);
+        spinner.setAdapter(mAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                setResult(mEditTextQuantity.getText().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        return spinner;
     }
 
     private void setResult(String input){

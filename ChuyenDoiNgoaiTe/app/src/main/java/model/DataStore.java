@@ -9,6 +9,7 @@ import utils.XMLParser;
  */
 
 public class DataStore {
+    private static final int VND_INDEX = 0;
     private static DataStore sDataStore;
     private List<Currency> mCurrencies;
 
@@ -25,7 +26,7 @@ public class DataStore {
         return sDataStore;
     }
 
-    public List<Currency> getCurrencies(){
+    public List<Currency> getAllCurrencies(){
         return mCurrencies;
     }
 
@@ -37,5 +38,11 @@ public class DataStore {
         }
 
         return currencyNames;
+    }
+
+    public List<Currency> getShownCurrencies(){
+        int startIndex = VND_INDEX + 1;
+        int endIndex = mCurrencies.size() - 1;
+        return mCurrencies.subList(startIndex, endIndex);
     }
 }

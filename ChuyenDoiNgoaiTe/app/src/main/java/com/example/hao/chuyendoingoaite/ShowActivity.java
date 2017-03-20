@@ -16,29 +16,24 @@ import model.Currency;
 import model.DataStore;
 
 public class ShowActivity extends AppCompatActivity {
-    private static final int VND_INDEX = 0;
     private GridView mGridView;
-    private DataStore mDataStore = DataStore.getInstance();
-    private List<Currency> mCurrencies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
 
-        mCurrencies = mDataStore.getCurrencies();
+        DataStore dataStore = DataStore.getInstance();
+        List<Currency> currencies = dataStore.getShownCurrencies();
 
         mGridView = (GridView) findViewById(R.id.grid_view_main);
-        mGridView.setAdapter(new CurrencyAdapter(this, getShownCurrencies()));
-    }
-
-    private List<Currency> getShownCurrencies(){
-        int startIndex = VND_INDEX + 1;
-        int endIndex = mCurrencies.size() - 1;
-        return mCurrencies.subList(startIndex, endIndex);
+        mGridView.setAdapter(new CurrencyAdapter(this, currencies));
     }
 
     private class CurrencyAdapter extends BaseAdapter{
+        private static final String CURRENCY_FORMAT = "%.2f";
+        private static final String CURRENCY_NOT_SUPPORT = "-";
+
         private Context mContext;
         private List<Currency> mCurrencies;
 
@@ -86,11 +81,11 @@ public class ShowActivity extends AppCompatActivity {
             textViewCurrencyName.setText(currency.getCurrencyName());
 
             TextView textViewBuy = (TextView) gridView.findViewById(R.id.grid_item_text_view_buy);
-            String buyPrice = currency.getBuy() == 0 ? "-" : String.format("%.2f", currency.getBuy());
+            String buyPrice = currency.getBuy() == 0 ? CURRENCY_NOT_SUPPORT : String.format(CURRENCY_FORMAT, currency.getBuy());
             textViewBuy.setText(buyPrice);
 
             TextView textViewSell = (TextView) gridView.findViewById(R.id.grid_item_text_view_sell);
-            textViewSell.setText(String.format("%.2f", currency.getSell()));
+            textViewSell.setText(String.format(CURRENCY_FORMAT, currency.getSell()));
         }
     }
 }
