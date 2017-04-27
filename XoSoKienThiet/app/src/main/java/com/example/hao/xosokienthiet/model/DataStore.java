@@ -5,7 +5,6 @@ import com.example.hao.xosokienthiet.utils.JSONParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +31,7 @@ public class DataStore {
         for (Prizes prizes : prizesOfAllDates) {
             if(prizes.getDate().equals(date)){
                 List<Prize> prize = prizes.getPrize();
-
-                Collections.sort(prize, new Comparator<Prize>() {
-                    @Override
-                    public int compare(Prize o1, Prize o2) {
-                        if(o1.getPosition().equals("DB")){
-                            return 1;
-                        }else{
-                            return -o1.getPosition().compareTo(o2.getPosition());
-                        }
-                    }
-                });
+                Collections.sort(prize);
 
                 return prize;
             }
